@@ -60,7 +60,8 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         # alter the text node.
         haveText = False
         for childNode in self.childNodes:
-            if childNode.nodeType == self.TEXT_NODE and childNode.data.strip():
+            # if childNode.nodeType == self.TEXT_NODE  and childNode.data.strip():
+            if childNode.nodeType == self.TEXT_NODE:
                 haveText = True
                 break
         if haveText:

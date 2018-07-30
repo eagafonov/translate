@@ -44,7 +44,7 @@ class QtTsParser:
         self.knowncontextnodes = {}
         self.indexcontextnodes = {}
         if inputfile is None:
-            self.document = ourdom.parseString("<!DOCTYPE TS><TS></TS>")
+            self.document = ourdom.parseString("<!DOCTYPE TS><TS version='2.1'></TS>")
         else:
             self.document = ourdom.parse(inputfile)
             assert self.document.documentElement.tagName == "TS"
@@ -85,10 +85,24 @@ class QtTsParser:
 
     def getxml(self):
         """return the ts file as xml"""
-        xml = self.document.toprettyxml(indent="    ", encoding="utf-8").decode('utf-8')
+        indent_len = 4
+        indent = ' ' * indent_len
+
+        xml = self.document.toprettyxml(indent=indent, encoding="utf-8").decode('utf-8')
         # This line causes empty lines in the translation text to be removed
         # (when there are two newlines)
-        xml = "\n".join([line for line in xml.split("\n") if line.strip()])
+
+        def _indent_one_level(s):
+            if s[:indent_len] == indent:
+                return s[indent_len:]
+            else:
+                return s
+
+        xml = "\n".join([_indent_one_level(line) for line in xml.split("\n") if line.strip()])
+
+        if xml[-1] != '\n':
+            xml += '\n'
+
         return xml
 
     def getcontextname(self, contextnode):
