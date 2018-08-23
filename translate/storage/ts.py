@@ -98,7 +98,10 @@ class QtTsParser:
             else:
                 return s
 
-        xml = "\n".join([_indent_one_level(line) for line in xml.split("\n") if line.strip()])
+        def _escape_apos(s):
+            return s.replace("'", "&apos;")
+
+        xml = "\n".join([_escape_apos(_indent_one_level(line)) for line in xml.split("\n") if line.strip()])
 
         if xml[-1] != '\n':
             xml += '\n'
